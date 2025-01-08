@@ -1,157 +1,45 @@
-Linux/Unix Power Tools유닉스/리눅스 명령어를 대체하는 모던 커맨드라인(Modern Unix/Linux Command line)Current:grep 을 대체할 수 있는 빠른 문자열 검색기 - ripgrep
-grep 을 대체할 수 있는 빠른 문자열 검색기 - ripgrep
-rg(ripgrep) 은 grep 을 대체할 수 있는 빠른 문자열 검색기로 Rust 언어로 작성되었습니다.
-현재 가장 빠른 text searcher 로 속도 향상을 위해 다음과 같이 구현되어 있습니다.
+평화를 구하는 기도문
+(Reinhold Niebuhr, 1892~1971) 
 
--g 옵션을 주면 globbing 패턴을 사용해서 특정 확장자의 모든 파일을 검색할 수 있습니다. 다음은 확장자가 .md 인 파일에서만 fast 라는 문구를 찾습니다.
+주님,
+바꿀 수 없는 것은 받아들이는 평온을,
+바꿀 수 있는 것은 변화시킬 수 있는 용기를,
+또한 그 차이를 구별할 수 있는 지혜를 주옵소서.
 
-$ rg fast -g '*.md'
-Bash
-BASH
+하루하루 살게 하시고
+순간순간 누리게 하시며
+고통을 평화에 이르는 길로 받아들이게 하옵시고,
 
+죄로 물든 세상을
+내 원대로가 아니라,
+예수님처럼 있는 그대로 받아들이게 하옵시며,
 
-glob 은 부정 연산자인 ! 를 활용할 수 있으며 다음은 확장자가 .md 가 아닌 모든 파일에서 검색합니다.
-
-$ rg fast -g '!*.md'
-Bash
-BASH
-
-
-여러 개의 globbing 패턴을 사용할 경우 -g 옵션뒤에 계속 기술해 주면 됩니다. 다음은 확장자가 .md 와 .toml 이 아닌 모든 파일에서 검색합니다.
-
-$ rg fast -g '!*.md' -g '!.toml'
-Bash
-BASH
+당신의 뜻에 순종할 때,
+바로 세우실 것을 믿게 하셔서,
+이 땅에서는 사리에 맞는 행복을
+천국에서는 다함이 없는 행복을
+영원히 누리게 하옵소서.
 
 
-마지막 PATH 를 생략하거나 현재 모든 하위 디렉터리내 파일에서 검색합니다. 다음은 현재 폴더의 모든 하위 디렉터리와 파일에서 fast 라는 문자열을 검색합니다.
+求和祈祷文
+(Reinhold Niebuhr, 1892~1971)
+主，
 
-$ rg fast 
-Bash
-BASH
+无法改变地是接受地平静，
+可以改变的是可以改变的勇气，
+也请赐予我们能够分辨出差异的智慧。
 
+让每一天都活下去
+每时每刻都能享受
+让我们接受痛苦，走向和平，
 
-대소문자 구분Link to 대소문자 구분
-rg 는 기본적으로 대소문자를 구분하므로 아래 구문에서 소문자 fast 는 검색되지 않습니다.
+被罪染红的世界
+并非如我所愿，
+请像耶稣一样接受原原本本地，
 
-$ rg FAst .
-Bash
-BASH
-대소문자 구분을 하지 않는 옵션인(-i, --ignore-case) 또는 구분하는 옵션인(-s, --case-sensitive) 를 제공하므로 이를 검색에 활용할수 있으며 다음은 대소문자를 구분하지 않고 fast 라는 단어를 검색합니다.
+当你顺从你的意愿时，
+让我相信会扶正，
+在这片土地上，把合情合理的幸福
 
-$ rg -i FAst .
-Bash
-BASH
-
-
-특정 파일 무시Link to 특정 파일 무시
-rg 는 검색 대상 폴더의 .gitignore 에 있는 파일 패턴들은 검색하지 않습니다.
-
-전역적으로 검색하지 않을 파일들이 있다면 $HOME/.ignore 파일을 만들고 .gitignore 와 같은 형식으로 등록해 주면 됩니다.
-
-*.so
-*.a
-*~
-Plain text
-CODE
-
-
-ignore 파일에 있는 파일 패턴들도 검색하려면 --no-ignore 옵션을 사용하면 됩니다.
-
-$ rg --no-ignore -i fast .
-Bash
-BASH
-압축 파일 검색Link to 압축 파일 검색
-rg 는 대상 파일이 압축 파일일 경우 압축을 해제해서 내용을 검색하지 않습니다.
-
-/var/log 밑에 있는 로그 파일들은 일정 기간이 지났을 경우 자동으로 압축되는 경우가 많으므로 예전 로그를 검색할 때 압축 파일도 검색해야 합니다.
-
-
-
--z, --search-zip 옵션을 사용하면 압축 파일도 검색해 줍니다.
-
-$ rg -z /var/log/nginx/*error*log*
-Bash
-BASH
-color 출력Link to color 출력
--p, --pretty 옵션은 사용하면 --color always 의 alias 입니다.
-
-
-
-정규식 Link to 정규식 
-rg 는 Rust 의 정규식 문법을 따르므로 이에 맞게 작성해 주면 됩니다.
-
-replaceLink to replace
--r, --replace 옵션을 사용하면 찾은 문자열을 지정한 패턴으로 변환할 수 있습니다. 아래는 hello 라는 문자열을 hi 로 변경합니다.
-
-$ echo "text: hello world" | rg hello -r hi
-Bash
-BASH
-
-
-only matchingLink to only matching
--o, --only-matching 옵션을 주면 일치한 부분만 출력하므로 rg 의 검색 결과를 다른 프로그램의 입력으로 사용할 때 적당합니다. 다음 2개 명령 결과를 비교해 보면 바로 이해할 수 있습니다. 
-
-$ echo "client_ip: 1.2.3.4" | rg 1.2
-client_ip: 1.2.3.4
-Bash
-BASH
-$ echo "client_ip: 1.2.3.4" | rg -o 1.2
-1.2
-Bash
-BASH
-
-
-
-사용 예Link to 사용 예
-rg 옵션 보기Link to rg 옵션 보기
-rg 도 -h 옵션을 주면 전체 명령어를 볼 수 있는데 이를 파이프로 받아서 키워드 검색을 하면 편리하게 키워드 관련된 옵션만 볼 수 있습니다.
-
-다음은 rg 에서 정규식 관련 옵션만 표시합니다.
-
-$ rg -h | rg regex
-Bash
-BASH
-
-
-
-nginx 에서 특정 공격 시도한 IP 만 추출Link to nginx 에서 특정 공격 시도한 IP 만 추출
-제 블로그를 포함해서 웹 서비스를 하게 되면 온갖 곳에서 공격이 들어옵니다.
-
-저는 주기적으로 nginx 로그를 보면서 phpmyadmin 이나 여러 취약점등을 이용한 공격이 들어오는 IP 을 추출해서 방화벽으로 IP 를 차단시켜 버립니다
-
-32330:2019/07/10 08:08:58 [error] 8310#8310: *3954294 open() "/usr/share/nginx/html/db/phpmyadmin/index.php" failed (2: No such file or directory), client: 149.90.163.229, server: localhost, request: "GET /db/phpmyadmin/index.php?lang=en HTTP/1.1", host: "1.2.3.4"
-32338:2019/07/10 08:09:04 [error] 8310#8310: *3954303 open() "/usr/share/nginx/html/admin/phpmyadmin/index.php" failed (2: No such file or directory), client: 86.238.162.49, server: localhost, request: "GET /admin/phpmyadmin/index.php?lang=en HTTP/1.1", host: "1.2.3.4"
-32360:2019/07/10 08:09:17 [error] 8310#8310: *3954333 open() "/usr/share/nginx/html/sql/phpmyadmin2/index.php" failed (2: No such file or directory), client: 80.114.252.47, server: localhost, request: "GET /sql/phpmyadmin2/index.php?lang=en HTTP/1.1", host: "1.2.3.4"
-32370:2019/07/10 08:09:22 [error] 8310#8310: *3954346 open() "/usr/share/nginx/html/db/phpmyadmin3/index.php" failed (2: No such file or directory), client: 149.90.163.229, server: localhost, request: "GET /db/phpmyadmin3/index.php?lang=en HTTP/1.1", host: "1.2.3.4"
-Plain text
-CODE
-
-
-다음 명령은 phpmyadmin 공격을 시도한 IP 를 추출해서 uniq 명령어로 중복을 제거해서 표시합니다.
-
-$ rg -z phpmyadmin *error*log* | rg  -o -e "client: [ \t]*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})" -r '$1' | uniq
-Bash
-BASH
-
-
-Pager 에 연결시 칼라 출력Link to Pager 에 연결시 칼라 출력
-less 같은 pager 에 연결하면 검색 결과가 칼라 출력이 되지 않지만 -p 옵션을 사용하면 칼라로 표시됩니다.
-
-$ rg -p POST *access | less -r
-Plain text
-CODE
-
-
-
-
-같이 보기Link to 같이 보기
-ack-grep 을 대체할 수 있는 빠른 코드 검색 도구 ag(silver searcher)
-linux firewalld 로 특정 IP 차단하기
-중복된 내용을 제거하는 linux uniq 명령어 사용법
-RefLink to Ref
-https://github.com/BurntSushi/ripgrep
-https://beyondgrep.com/feature-comparison/
-https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
-
-modern-linux-command
+在天堂里没有尽头的幸福
+让我们永远享受吧。
